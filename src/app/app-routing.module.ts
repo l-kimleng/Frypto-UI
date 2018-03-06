@@ -7,6 +7,8 @@ import {
   NbRegisterComponent,
   NbRequestPasswordComponent,
   NbResetPasswordComponent,
+  NbAuthModule,
+  NbEmailPassAuthProvider,
 } from '@nebular/auth';
 
 const routes: Routes = [
@@ -50,7 +52,39 @@ const config: ExtraOptions = {
 };
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, config)],
+  imports: [
+    RouterModule.forRoot(routes, config),
+    NbAuthModule.forRoot({
+      providers: {
+        email: {
+          service: NbEmailPassAuthProvider,
+          config: {
+            baseEndpoint: 'http://localhost:50488/',
+            login: {
+              endpoint: '/Token',
+              method: 'post',
+            },
+            register: {
+              endpoint: '/api/Account/Register',
+              method: 'post',
+            },
+            logout: {
+               endpoint: '/auth/sign-out',
+               method: 'post',
+             },
+             requestPass: {
+               endpoint: '/auth/request-pass',
+               method: 'post',
+             },
+             resetPass: {
+               endpoint: '/auth/reset-pass',
+               method: 'post',
+             }
+          },
+        },
+      },
+    }) 
+  ],
   exports: [RouterModule],
 })
 export class AppRoutingModule {
