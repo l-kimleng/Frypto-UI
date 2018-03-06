@@ -1,13 +1,12 @@
 {
-  "name": "ngx-admin",
-  "version": "2.1.0",
-  "license": "MIT",
+  "name": "frypto-ui",
+  "version": "1.0.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/akveo/ngx-admin.git"
+    "url": "https://github.com/l-kimleng/Frypto-UI"
   },
   "bugs": {
-    "url": "https://github.com/akveo/ngx-admin/issues"
+    "url": "https://github.com/l-kimleng/Frypto-UI/issues"
   },
   "scripts": {
     "ng": "ng",
