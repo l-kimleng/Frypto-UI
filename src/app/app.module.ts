@@ -14,13 +14,13 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { ThemeModule } from './@theme/theme.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { NbAuthModule, NbEmailPassAuthProvider } from '@nebular/auth';
+import { NbAuthModule } from '@nebular/auth';
 import { OwinTokenAuthProvider } from './auth/providers/owin-token-auth.provider';
 
 const authConfig: any = {
   baseEndpoint: 'http://localhost:50488',
   token: {
-    key: 'access_token'
+    key: 'access_token',
   },
   login: {
     endpoint: '/Token',
@@ -41,7 +41,7 @@ const authConfig: any = {
    resetPass: {
      endpoint: '/auth/reset-pass',
      method: 'post',
-   }
+   },
 };
 
 @NgModule({
@@ -59,23 +59,23 @@ const authConfig: any = {
       providers: {
         email: {
           service: OwinTokenAuthProvider,
-          config: authConfig
+          config: authConfig,
         },
       },
       forms: {
         register: {
           redirectDelay: 0,
           showMessages: {
-            success: true            
-          }
-        }
-      }
-    })
+            success: true,
+          },
+        },
+      },
+    }),
   ],
   bootstrap: [AppComponent],
   providers: [
     { provide: APP_BASE_HREF, useValue: '/' },
-    OwinTokenAuthProvider
+    OwinTokenAuthProvider,
   ],
 })
 export class AppModule {

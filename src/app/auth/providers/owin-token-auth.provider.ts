@@ -1,12 +1,12 @@
-import { NbAbstractAuthProvider, NbAuthResult } from "@nebular/auth";
-import { NgEmailPassAuthProviderConfig } from "@nebular/auth/providers/email-pass-auth.options";
-import { HttpResponse, HttpErrorResponse, HttpClient, HttpHeaders } from "@angular/common/http";
+import { NbAbstractAuthProvider, NbAuthResult } from '@nebular/auth';
+import { NgEmailPassAuthProviderConfig } from '@nebular/auth/providers/email-pass-auth.options';
+import { HttpResponse, HttpErrorResponse, HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { of as observableOf } from 'rxjs/observable/of';
 import { switchMap } from 'rxjs/operators/switchMap';
 import { map } from 'rxjs/operators/map';
 import { catchError } from 'rxjs/operators/catchError';
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute } from '@angular/router';
 import { getDeepFromObject } from '../helpers';
 import { Injectable } from '@angular/core';
 
@@ -89,19 +89,21 @@ export class OwinTokenAuthProvider extends NbAbstractAuthProvider {
           this.getConfigValue(`${module}.defaultMessages`)),
       },
     };
-  
+
     constructor(protected http: HttpClient, private route: ActivatedRoute) {
       super();
     }
-  
-    private encodeParams(params: any) : string {
-      let body: string = "";
-      for(let key in params) {
-        if(body.length) {
-          body += "&";
+
+    private encodeParams(params: any): string {
+      let body: string = '';
+      for (const key in params) {
+        if (params.hasOwnProperty(key)) {
+          if (body.length) {
+            body += '&';
+          }
+          body += key + '=';
+          body += encodeURIComponent(params[key]);
         }
-        body += key + "=";
-        body += encodeURIComponent(params[key]);
       }
       return body;
     }
@@ -110,18 +112,18 @@ export class OwinTokenAuthProvider extends NbAbstractAuthProvider {
       const method = this.getConfigValue('login.method');
       const url = this.getActionEndpoint('login');
       const myHeader: HttpHeaders = new HttpHeaders({ 'Content-Type': 'application/x-www-form-urlencoded'});
-      if(data != null) {
-          data["grant_type"] = 'password';
-          data["username"] = data["email"];
+      if (data != null) {
+          data['grant_type'] = 'password';
+          data['username'] = data['email'];
       }
-      let dataEncoded = this.encodeParams(data);
+      const dataEncoded = this.encodeParams(data);
       return this.http.request(method, url, {body: dataEncoded, headers: myHeader, observe: 'response'})
         .pipe(
           map((res) => {
             if (this.getConfigValue('login.alwaysFail')) {
               throw this.createFailResponse(data);
             }
-  
+
             return res;
           }),
           this.validateToken('login'),
@@ -141,7 +143,7 @@ export class OwinTokenAuthProvider extends NbAbstractAuthProvider {
             } else {
               errors.push('Something went wrong.');
             }
-  
+
             return observableOf(
               new NbAuthResult(
                 false,
@@ -152,7 +154,7 @@ export class OwinTokenAuthProvider extends NbAbstractAuthProvider {
           }),
         );
     }
-  
+
     register(data?: any): Observable<NbAuthResult> {
       const method = this.getConfigValue('register.method');
       const url = this.getActionEndpoint('register');
@@ -162,7 +164,7 @@ export class OwinTokenAuthProvider extends NbAbstractAuthProvider {
             if (this.getConfigValue('register.alwaysFail')) {
               throw this.createFailResponse(data);
             }
-  
+
             return res;
           }),
           this.validateToken('register'),
@@ -182,7 +184,7 @@ export class OwinTokenAuthProvider extends NbAbstractAuthProvider {
             } else {
               errors.push('Something went wrong.');
             }
-  
+
             return observableOf(
               new NbAuthResult(
                 false,
@@ -193,7 +195,7 @@ export class OwinTokenAuthProvider extends NbAbstractAuthProvider {
           }),
         );
     }
-  
+
     requestPassword(data?: any): Observable<NbAuthResult> {
       const method = this.getConfigValue('requestPass.method');
       const url = this.getActionEndpoint('requestPass');
@@ -203,7 +205,7 @@ export class OwinTokenAuthProvider extends NbAbstractAuthProvider {
             if (this.getConfigValue('requestPass.alwaysFail')) {
               throw this.createFailResponse();
             }
-  
+
             return res;
           }),
           map((res) => {
@@ -221,7 +223,7 @@ export class OwinTokenAuthProvider extends NbAbstractAuthProvider {
             } else {
               errors.push('Something went wrong.');
             }
-  
+
             return observableOf(
               new NbAuthResult(
                 false,
@@ -232,11 +234,11 @@ export class OwinTokenAuthProvider extends NbAbstractAuthProvider {
           }),
         );
     }
-  
+
     resetPassword(data: any = {}): Observable<NbAuthResult> {
       const tokenKey = this.getConfigValue('resetPass.resetPasswordTokenKey');
       data[tokenKey] = this.route.snapshot.queryParams[tokenKey];
-  
+
       const method = this.getConfigValue('resetPass.method');
       const url = this.getActionEndpoint('resetPass');
       return this.http.request(method, url, {body: data, observe: 'response'})
@@ -245,7 +247,7 @@ export class OwinTokenAuthProvider extends NbAbstractAuthProvider {
             if (this.getConfigValue('resetPass.alwaysFail')) {
               throw this.createFailResponse();
             }
-  
+
             return res;
           }),
           map((res) => {
@@ -263,7 +265,7 @@ export class OwinTokenAuthProvider extends NbAbstractAuthProvider {
             } else {
               errors.push('Something went wrong.');
             }
-  
+
             return observableOf(
               new NbAuthResult(
                 false,
@@ -274,12 +276,12 @@ export class OwinTokenAuthProvider extends NbAbstractAuthProvider {
           }),
         );
     }
-  
+
     logout(): Observable<NbAuthResult> {
-  
+
       const method = this.getConfigValue('logout.method');
       const url = this.getActionEndpoint('logout');
-  
+
       return observableOf({})
         .pipe(
           switchMap((res: any) => {
@@ -292,7 +294,7 @@ export class OwinTokenAuthProvider extends NbAbstractAuthProvider {
             if (this.getConfigValue('logout.alwaysFail')) {
               throw this.createFailResponse();
             }
-  
+
             return res;
           }),
           map((res) => {
@@ -310,7 +312,7 @@ export class OwinTokenAuthProvider extends NbAbstractAuthProvider {
             } else {
               errors.push('Something went wrong.');
             }
-  
+
             return observableOf(
               new NbAuthResult(
                 false,
@@ -321,7 +323,7 @@ export class OwinTokenAuthProvider extends NbAbstractAuthProvider {
           }),
         );
     }
-  
+
     protected validateToken (module: string): any {
       return map((res) => {
         const token = this.getConfigValue('token.getter')(module, res);
@@ -330,17 +332,17 @@ export class OwinTokenAuthProvider extends NbAbstractAuthProvider {
           console.warn(`NbEmailPassAuthProvider:
                             Token is not provided under '${key}' key
                             with getter '${this.getConfigValue('token.getter')}', check your auth configuration.`);
-  
+
           throw new Error('Could not extract token from the response.');
         }
         return res;
       });
     }
-  
+
     protected getActionEndpoint(action: string): string {
       const actionEndpoint: string = this.getConfigValue(`${action}.endpoint`);
       const baseEndpoint: string = this.getConfigValue('baseEndpoint');
       return baseEndpoint + actionEndpoint;
     }
   }
-  
+
