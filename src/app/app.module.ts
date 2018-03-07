@@ -14,6 +14,35 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { ThemeModule } from './@theme/theme.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NbAuthModule, NbEmailPassAuthProvider } from '@nebular/auth';
+import { OwinTokenAuthProvider } from './auth/providers/owin-token-auth.provider';
+
+const authConfig: any = {
+  baseEndpoint: 'http://localhost:50488',
+  token: {
+    key: 'access_token'
+  },
+  login: {
+    endpoint: '/Token',
+    method: 'post',
+  },
+  register: {
+    endpoint: '/api/Account/Register',
+    method: 'post',
+  },
+  logout: {
+     endpoint: '/auth/sign-out',
+     method: 'post',
+   },
+   requestPass: {
+     endpoint: '/auth/request-pass',
+     method: 'post',
+   },
+   resetPass: {
+     endpoint: '/auth/reset-pass',
+     method: 'post',
+   }
+};
 
 @NgModule({
   declarations: [AppComponent],
@@ -26,10 +55,27 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     NgbModule.forRoot(),
     ThemeModule.forRoot(),
     CoreModule.forRoot(),
+    NbAuthModule.forRoot({
+      providers: {
+        email: {
+          service: OwinTokenAuthProvider,
+          config: authConfig
+        },
+      },
+      forms: {
+        register: {
+          redirectDelay: 0,
+          showMessages: {
+            success: true            
+          }
+        }
+      }
+    })
   ],
   bootstrap: [AppComponent],
   providers: [
     { provide: APP_BASE_HREF, useValue: '/' },
+    OwinTokenAuthProvider
   ],
 })
 export class AppModule {
